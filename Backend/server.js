@@ -5,7 +5,8 @@ const Moralis = require("moralis").default;
 const scoreRoutes = require('./routes/scoreRoutes.js')
 const blockchainRoutes = require("./routes/blockchainRoutes");
 const twitterRoutes = require("./routes/twitterRoutes");
-const VeridaApi= require ("./routes/VeridaApi.js");
+const VeridaApiRoutes= require("./routes/VeridaApiRoute.js");
+const VeridaAuthRoutes= require('./routes/VeridaAuthRoute.js')
 const connectDB = require('./db.js')
 
 dotenv.config(); // Load .env variables
@@ -20,7 +21,8 @@ app.use("/api/twitter", twitterRoutes);
 // Load blockchain routes
 app.use("/api", blockchainRoutes);
 
-app.use('/VeridaApi', VeridaApi);
+app.use('/VeridaApi', VeridaApiRoutes);
+app.use('/VeridaAuth',VeridaAuthRoutes)
 
 // Default route
 app.get("/", (req, res) => {

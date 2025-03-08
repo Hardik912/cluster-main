@@ -12,6 +12,7 @@ const Dashboard = () => {
   const { logout, user } = usePrivy();
   const navigate = useNavigate();
   const { username, address } = useParams();
+  const [veridaUser, setVeridaUser] = useState(null);
 
   // ✅ Get global score from Redux
 
@@ -81,7 +82,6 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-  const isAuthenticated = !!user;
   const updateTitle = (totalScore) => {
     let newTitle = "ALL ROUNDOOR";
     if (totalScore >= 90) newTitle = "ALPHA TRADOOR";
@@ -135,8 +135,17 @@ const Dashboard = () => {
           </div>
           {error && <p className="text-red-500 mt-4">{error}</p>}
 
-          {/* If no Wallet is Connected, Show Wallet Button */}
-         <div className="flex items-center justify-center"><VLogin/></div> 
+          <main className="flex flex-1 items-center justify-center p-8">
+        <div className="bg-gray-800 shadow-xl rounded-lg p-8 w-full max-w-2xl text-center border border-gray-700">
+          {veridaUser ? (
+            // If authenticated, show Verida Dashboard
+            <VDashboard user={veridaUser} />
+          ) : (
+            // Otherwise, show Verida Login
+            <VLogin setUser={setVeridaUser} />
+          )}
+        </div>
+      </main>
 
 
           {/* If no Twitter is Connected, Show Twitter Auth */}
