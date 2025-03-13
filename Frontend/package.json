@@ -1,13 +1,16 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "react-scripts build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "react-scripts test",
+    "start": "react-scripts start",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@privy-io/react-auth": "^2.4.5",
@@ -19,7 +22,6 @@
     "ethers": "^6.13.5",
     "firebase": "^11.3.1",
     "framer-motion": "^12.4.10",
-    "frontend": "file:",
     "html2canvas": "^1.4.1",
     "immer": "^10.1.1",
     "jspdf": "^3.0.0",
