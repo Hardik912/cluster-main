@@ -21,6 +21,8 @@ async function calculateScore(req, res) {
             return res.status(400).json({ error: "Provide a Privy ID" });
         }
 
+        
+
         console.log(`📢 Fetching data for: PrivyID(${privyId}), Twitter(${username || "None"}), Wallet(${address || "None"})`);
 
         let userData = null;
