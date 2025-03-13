@@ -9,6 +9,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import Verida from './Verida/Verida'
 import Home from "./components/Home";
 import Leaderboard from "./components/Leaderboard";
+import Veridapage from "./components/Veridapage";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
         } />
         <Route path="/verida" element={<Verida/>} />
         <Route path="/Home/Leaderboard" element={<Leaderboard/>} />
+        <Route path="/varidapage" element={<Veridapage/>} />
       <Route path="/" element={<Login />} />
       <Route
         path="/dashboard/:privyId/:username/:address"

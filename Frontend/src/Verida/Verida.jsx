@@ -11,6 +11,7 @@ function Verida() {
   const [fomoData, setFomoData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [authToken, setAuthToken] = useState(null);
   const [manualDid, setManualDid] = useState('');
   const [manualMode, setManualMode] = useState(false);
 
@@ -37,12 +38,14 @@ function Verida() {
 
       // ✅ Send data to backend for FOMO score
       sendFOMOscore(user.id, did, authToken);
+      setConnected(true); // Set connected to true when we have both DID and auth token
     }
 
     if (did && authToken) {
       console.log('Authenticated:', { did, authToken: authToken.substring(0, 10) + '...' });
       setFomoUser({ did, authToken });
-      
+      console.log(`See this ${did} and the ${authToken} token`);
+      setConnected(true); // Set connected to true when we have both DID and auth token
       return;
     }
 
@@ -62,6 +65,7 @@ function Verida() {
 
         if (extractedDid && extractedToken) {
           setFomoUser({ did: extractedDid, authToken: extractedToken, tokenData });
+          setConnected(true); // Set connected to true when we have both DID and auth token
         } else {
           setError('Incomplete authentication data.');
         }
@@ -72,10 +76,10 @@ function Verida() {
     }
   }, [user, location]);
 
-  const sendFOMOscore = async ( userDid, authToken) => {
+  const sendFOMOscore = async (privyId, userDid, authToken) => {
     try {
       setLoading(true);
-      console.log("📤 Sending to backend:", { userDid, authToken });
+      console.log("📤 Sending to backend:", { privyId, userDid, authToken });
 
       const response = await axios.post(
         `http://localhost:5000/api/score/get-score`,
@@ -131,12 +135,14 @@ function Verida() {
     fetchFOMOscore();
   }, [fomoUser]);
 
+  
+
   const connectWithVerida = () => {
     const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
     const callbackUrl = `${backendUrl}/auth/callback`;
-    setTimeout(() => {
-      setConnected(true);
-    }, 3000); 
+    
+     
+     
     const authUrl = `https://app.verida.ai/auth?scopes=api%3Ads-query&scopes=api%3Asearch-universal&scopes=ds%3Asocial-email&scopes=api%3Asearch-ds&scopes=api%3Asearch-chat-threads&scopes=ds%3Ar%3Asocial-chat-group&scopes=ds%3Ar%3Asocial-chat-message&redirectUrl=${encodeURIComponent(callbackUrl)}&appDID=did%3Avda%3Amainnet%3A0x87AE6A302aBf187298FC1Fa02A48cFD9EAd2818D`;
 
     console.log('Redirecting to Verida:', authUrl);
@@ -149,12 +155,13 @@ function Verida() {
     setError(null);
     setLoading(false);
     setConnected(false)
-    window.location.href = '/';
+    window.location.href = 'varidapage';
   };
 
   const handleManualLogin = () => {
     if (manualDid) {
       setFomoUser({ did: manualDid, authToken: 'manual-auth-token-for-testing' });
+      setConnected(true); // Set connected to true when we have manual DID and auth token
     } else {
       setError('Please enter a valid DID');
     }
@@ -162,9 +169,9 @@ function Verida() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center  h-24">
         <div className="text-center">
-          <h2 className="text-lg font-semibold">Calculating your FOMOscore...</h2>
+          <h2 className="text-lg font-semibold">Connecting Verida</h2>
           <div className="animate-spin h-10 w-10 border-t-4 border-blue-500 rounded-full mx-auto mt-4"></div>
         </div>
       </div>
@@ -173,7 +180,7 @@ function Verida() {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center  h-24">
         <div className="bg-red-100 p-6 rounded-lg shadow-md text-center">
           <h2 className="text-xl font-semibold text-red-500">Oops! Something went wrong</h2>
           <p className="mt-2 text-red-700">{error}</p>
@@ -187,39 +194,31 @@ function Verida() {
 
   if (fomoUser && fomoData) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <h1 className="text-2xl font-bold">Your FOMOscore</h1>
-          <p className="mt-2 text-gray-600">Verida DID: <span className="font-mono">{fomoUser.did}</span></p>
-          <div className="mt-4 flex justify-center">
-            <div className="w-24 h-24 flex items-center justify-center bg-blue-500 text-white text-3xl font-bold rounded-full">
-              {fomoData.score} / 10
-            </div>
-          </div>
-          <button className="mt-6 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={handleLogout}>
-            Log Out
-          </button>
+      <div className="flex justify-center items-center h-24">
+        <div className="text-xl font-bold text-cyan-400">
+          Verida Connected
         </div>
-      </div>
+
+        </div>
+     
     );
   }
 
   return (
     <div className="relative z-20 bg-gradient-to-b from-gray-900 to-black bg-opacity-60 backdrop-blur-xl shadow-lg rounded-xl p-4 w-[230px] mt-4 border border-cyan-400 transition-all duration-500 ease-in-out flex flex-col items-center">
-  {connected ? (
-    <div className="text-xl font-bold text-cyan-400">
-      Verida Connected
+      {connected ? (
+        <div className="text-xl font-bold text-cyan-400">
+          Verida Connected
+        </div>
+      ) : (
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all transform hover:scale-105"
+          onClick={connectWithVerida}
+        >
+          Connect with Verida
+        </button>
+      )}
     </div>
-  ) : (
-    <button
-      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all transform hover:scale-105"
-      onClick={connectWithVerida}
-    >
-      Connect with Verida
-    </button>
-  )}
-</div>
-
   );
 }
 

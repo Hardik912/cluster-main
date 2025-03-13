@@ -4,6 +4,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useNavigate,Link } from "react-router-dom";
 import axios from "axios";
 import DownloadButton from "../Home/DownloadButton"; // ✅ Import the component
+import Verida from "../Verida/Verida";
 
 const Home = () => {
   const { logout, user } = usePrivy();

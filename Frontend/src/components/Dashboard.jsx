@@ -106,7 +106,7 @@ const Dashboard = () => {
       </button>
 
       {/* Main Container for Score Card and Verida */}
-      <div className="relative z-10 flex flex-col items-center gap-8 top-12">
+      <div className="relative z-10 flex flex-col items-center gap-8">
         {/* Main Score Card */}
         <motion.div
           className="bg-gradient-to-b from-gray-900 to-black bg-opacity-60 backdrop-blur-xl shadow-lg rounded-xl p-10 w-[400px] h-[500px] border border-cyan-400 hover:border-pink-500 transition-all duration-500 ease-in-out flex flex-col items-center justify-center"
@@ -174,9 +174,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Verida Component Container */}
-        <div className="w-[300px] relative bottom-32 left-9">
-          <Verida />
-        </div>
+       
       </div>
     </div>
   );
