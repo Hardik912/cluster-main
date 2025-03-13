@@ -6,7 +6,7 @@ const ScoreDisplay = () => {
   const [scoreData, setScoreData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const fetchScore = async () => {
     setLoading(true);
     setError("");
@@ -14,7 +14,7 @@ const ScoreDisplay = () => {
     console.log("Sending Data:", { username, address }); // Debugging log
     
     try {
-        const response = await fetch("http://localhost:5000/api/score/get-score", {
+        const response = await fetch(`${apiBaseUrl}/api/score/get-score`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, address }), // Ensure correct data format

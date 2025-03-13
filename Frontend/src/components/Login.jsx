@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const Login = () => {
   const { login, authenticated, user } = usePrivy();
   const navigate = useNavigate();
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     if (authenticated && user) {
       const username = user?.twitter?.username || "guest";

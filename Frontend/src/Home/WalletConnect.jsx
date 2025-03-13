@@ -10,6 +10,7 @@ const WalletConnect = () => {
   const navigate = useNavigate(); // ✅ Initialize Navigate
   const [connectedWallets, setConnectedWallets] = useState({});
   const [error, setError] = useState("");
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const { connect, connectors } = useConnect();
 
@@ -115,7 +116,7 @@ const WalletConnect = () => {
     try {
       console.log("📤 Sending to backend:", { privyId: userId, walletAddress });
       const response = await axios.post(
-        "http://localhost:5000/api/score/get-score",
+        `${apiBaseUrl}/api/score/get-score`,
         { privyId: userId, walletAddress }
       );
 
