@@ -14,6 +14,7 @@ function Verida() {
   const [authToken, setAuthToken] = useState(null);
   const [manualDid, setManualDid] = useState('');
   const [manualMode, setManualMode] = useState(false);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -82,7 +83,7 @@ function Verida() {
       console.log("📤 Sending to backend:", { privyId, userDid, authToken });
 
       const response = await axios.post(
-        `http://localhost:5000/api/score/get-score`,
+        `${apiBaseUrl}/api/score/get-score`,
         { userDid, authToken }
       );
 
@@ -118,7 +119,7 @@ function Verida() {
         }
 
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/score`,
+          `${apiBaseUrl}/api/score`,
           { did: fomoUser.did, authToken: fomoUser.authToken }
         );
 

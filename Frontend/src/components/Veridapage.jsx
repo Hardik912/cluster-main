@@ -14,7 +14,7 @@ const Veridapage = () => {
   const [score, setScore] = useState(0);
   const [isAnimationDone, setIsAnimationDone] = useState(false);
   const [veridaConnected, setVeridaConnected] = useState(false);
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     if (!user?.id) return;
 
@@ -23,7 +23,7 @@ const Veridapage = () => {
         setLoading(true);
         setError("");
         const response = await axios.get(
-          `http://localhost:5000/api/score/total-score/${user.id}`
+          `${apiBaseUrl}/api/score/total-score/${user.id}`
         );
         setRealScore(response.data.totalScore);
         console.log("✅ Real Score Fetched from Verida:", response.data.totalScore);

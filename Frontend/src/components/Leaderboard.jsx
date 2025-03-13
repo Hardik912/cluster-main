@@ -54,7 +54,7 @@ export default function ClusterDashboard() {
   const [networkNodes, setNetworkNodes] = useState([])
   const [networkLinks, setNetworkLinks] = useState([])
   const networkCanvasRef = useRef(null)
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   // Generate network data
   useEffect(() => {
     // Generate random nodes

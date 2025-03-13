@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   // Extract Privy ID
   const privyID = user?.id || "guest";
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   // Fetch Real Score
   useEffect(() => {
     if (privyID) {
@@ -45,7 +45,7 @@ const Dashboard = () => {
     setError("");
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/score/total-score/${privyID}`);
+      const response = await axios.get(`${apiBaseUrl}/api/score/total-score/${privyID}`);
       const data = response.data;
       console.log("✅ Real Score Fetched:", data.totalScore);
       setRealScore(data.totalScore);

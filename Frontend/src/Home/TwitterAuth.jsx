@@ -8,7 +8,7 @@ function TwitterAuth() {
   const [user, setUseri] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const privyID = user?.id || "guest";
   // ✅ Fetch score when user logs in
@@ -25,7 +25,7 @@ function TwitterAuth() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/score/get-score/${privyID}/${username}/null`,
+        `${apiBaseUrl}/api/score/get-score/${privyID}/${username}/null`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
