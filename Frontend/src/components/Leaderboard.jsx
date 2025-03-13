@@ -26,6 +26,7 @@ import {
   Link,
 } from "lucide-react"
 import html2canvas from "html2canvas"
+import Verida from "../Verida/Verida"
 
 const textShadowStyle = {
   textShadow: "0 1px 2px rgba(0,0,0,0.5)",
@@ -858,9 +859,9 @@ export default function ClusterDashboard() {
             </div>
           </div>
 
-          <button className="mt-4 px-4 py-2 bg-black/30 backdrop-blur-md backdrop-filter border border-purple-500/30 text-gray-300 rounded-md flex items-center hover:bg-purple-900/40 transition-colors">
-            <Wallet className="h-4 w-4 mr-2" />
-            Connect your wallet
+          <button className="mt-4 px-4 py-2 relative w-32 h-16 bg-black/30 backdrop-blur-md backdrop-filter border border-purple-500/30 text-gray-300 rounded-md flex items-center hover:bg-purple-900/40 transition-colors">
+            
+            <Verida/>
           </button>
         </div>
 

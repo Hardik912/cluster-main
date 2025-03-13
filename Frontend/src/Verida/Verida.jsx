@@ -171,8 +171,8 @@ function Verida() {
     return (
       <div className="flex justify-center items-center  h-24">
         <div className="text-center">
-          <h2 className="text-lg font-semibold">Connecting Verida</h2>
-          <div className="animate-spin h-10 w-10 border-t-4 border-blue-500 rounded-full mx-auto mt-4"></div>
+          <h2 className="text-xl font-semibold"></h2>
+          <div className="animate-spin h-10 w-10 border-t-4 border-blue-500 rounded-full mx-auto ml-6"></div>
         </div>
       </div>
     );

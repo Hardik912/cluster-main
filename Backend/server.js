@@ -95,7 +95,7 @@ app.get('/auth/callback', async (req, res) => {
     // If we still don't have an auth token, redirect to Verida's authentication
     if (!authToken) {
       // If no token, redirect to Verida's token generator with our frontend as the callback
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5174/varidapage';
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5174/home/leaderboard';
       const returnUrl = `${frontendUrl}?source=verida_callback`;
       
       console.log('No token found, redirecting to Verida token generator with return URL:', returnUrl);
@@ -123,7 +123,7 @@ app.get('/auth/callback', async (req, res) => {
     console.log('Final values - DID:', did, 'Auth Token:', authToken ? `${authToken.substring(0, 10)}...` : 'none');
     
     // Redirect to frontend with the token information
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/varidapage';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/home/leaderboard';
     const redirectUrl = `${frontendUrl}?did=${encodeURIComponent(did || 'unknown')}&authToken=${encodeURIComponent(authToken)}`;
     
     console.log('Redirecting to frontend with token data:', redirectUrl);
@@ -132,7 +132,7 @@ app.get('/auth/callback', async (req, res) => {
     console.error('Error in auth callback:', error);
     
     // Redirect to frontend with error information
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/varidapage';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/home/leaderboard';
     res.redirect(`${frontendUrl}?error=auth_error&message=${encodeURIComponent(error.message || 'Unknown error')}`);
   }
 });
