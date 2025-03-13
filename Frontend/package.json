@@ -1,27 +1,25 @@
 {
-  "name": "frontend",
+  "name": "merged-project",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.1",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "react-scripts build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "react-scripts test",
-    "start": "react-scripts start",
-    "eject": "react-scripts eject"
-  },
   "dependencies": {
+    "@arcana/auth": "^1.0.10",
+    "@arcana/auth-wagmi": "^2.0.0",
     "@privy-io/react-auth": "^2.4.5",
+    "@rainbow-me/rainbowkit": "^1.0.8",
     "@reduxjs/toolkit": "^2.6.0",
     "@tanstack/react-query": "^5.66.9",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
     "@walletconnect/web3-provider": "^1.8.0",
     "axios": "^1.8.2",
     "badge-maker": "^4.1.0",
+    "dotenv": "^16.4.5",
     "ethers": "^6.13.5",
     "firebase": "^11.3.1",
     "framer-motion": "^12.4.10",
+    "frontend": "file:",
     "html2canvas": "^1.4.1",
     "immer": "^10.1.1",
     "jspdf": "^3.0.0",
@@ -33,9 +31,39 @@
     "react-modal": "^3.16.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.2.0",
+    "react-scripts": "5.0.1",
     "react-share": "^5.2.2",
+    "styled-components": "^6.1.14",
     "viem": "^2.23.5",
-    "wagmi": "^2.14.12"
+    "wagmi": "^2.14.12",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "vite",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
