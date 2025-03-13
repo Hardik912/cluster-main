@@ -130,9 +130,11 @@ const WalletConnect = () => {
     <div className="relative flex items-center justify-center min-h-screen text-white overflow-hidden">
       {/* 🔥 Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/bg.webp')" }}
-      >
+    className="absolute inset-0"
+    style={{
+      background: "linear-gradient(135deg, #000000 0%, #1a1a1a 100%)",
+    }}
+  >
         <div className="absolute inset-0 bg-opacity-80 bg-black opacity-60"></div>
       </div>
 

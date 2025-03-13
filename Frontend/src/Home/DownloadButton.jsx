@@ -18,18 +18,20 @@ import {
   FaFacebook,
   FaReddit,
   FaEnvelope,
+  FaDownload,
+  FaShareAlt,
 } from "react-icons/fa";
 
-Modal.setAppElement("#root"); // Required for accessibility
+Modal.setAppElement("#root");
 
 const DownloadButton = () => {
   const score = useSelector((state) => state.score.totalScore);
   const title = useSelector((state) => state.score.title);
 
-  const [format, setFormat] = useState("text");
+  const [format, setFormat] = useState("pdf");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const shareMessage = `Check out my score on Cluster Protocol! Score: ${score} - Title: ${title}`;
+  const shareMessage = `🚀 Check out my score on Cluster Protocol! Score: ${score} - Title: ${title}`;
   const shareUrl = "https://your-app-url.com"; // Replace with your actual app URL
 
   // ✅ Function to Download Score in Selected Format
@@ -46,7 +48,7 @@ const DownloadButton = () => {
         await downloadImage();
         break;
       default:
-        downloadText(content);
+        downloadPDF(content);
     }
   };
 
@@ -81,33 +83,40 @@ const DownloadButton = () => {
   };
 
   return (
-    <div>
-      {/* Download Section */}
-      <div className="mt-6 p-4 bg-gray-900 rounded-lg border border-gray-700 text-center">
-        <h3 className="text-lg font-semibold text-gray-300 mb-2">Download Your Score</h3>
+    <div className="flex flex-col items-center w-[320px]"> {/* Adjusted width */}
+      {/* Buttons Section */}
+      <div className="mt-6 p-5 w-full bg-black/40 backdrop-blur-md border border-purple-500/30 shadow-xl rounded-lg text-center">
+        <h3 className="text-lg font-semibold text-gray-300 mb-3 tracking-wide">
+          Download & Share
+        </h3>
 
-        <select
-          onChange={(e) => setFormat(e.target.value)}
-          value={format}
-          className="mb-4 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none"
-        >
-          <option value="text">Text</option>
-          <option value="pdf">PDF</option>
-          <option value="img">Image</option>
-        </select>
+        {/* Format Selector */}
+        <div className="flex items-center space-x-4">
+          <select
+            onChange={(e) => setFormat(e.target.value)}
+            value={format}
+            className="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none shadow-lg hover:bg-gray-700 transition w-full"
+          >
+            <option value="pdf">PDF</option>
+            <option value="text">Text</option>
+            <option value="img">Image</option>
+          </select>
 
-        <button
-          onClick={downloadReport}
-          className="ml-4 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition"
-        >
-          Download
-        </button>
+          {/* Download Button */}
+          <button
+            onClick={downloadReport}
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-lg font-semibold shadow-md transform hover:scale-105 transition w-full"
+          >
+            <FaDownload className="text-lg" /> Download
+          </button>
+        </div>
 
+        {/* Share Button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="ml-4 bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition"
+          className="mt-4 flex items-center gap-2 bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-lg font-semibold shadow-md transform hover:scale-105 transition w-full"
         >
-          Share
+          <FaShareAlt className="text-lg" /> Share
         </button>
       </div>
 
@@ -116,64 +125,59 @@ const DownloadButton = () => {
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Share Score"
-        style={{
-          overlay: { zIndex: 1000, backgroundColor: "rgba(0, 0, 0, 0.7)" },
-          content: {
-            width: "350px",
-            height: "450px",
-            margin: "auto",
-            background: "#222",
-            color: "#fff",
-            padding: "20px",
-            borderRadius: "10px",
-          },
-        }}
+        className="fixed inset-0 flex items-center justify-center p-4"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-md"
       >
-        <h2 className="text-lg font-bold text-white mb-4 text-center">Share Your Score</h2>
-        <div className="flex flex-col items-center space-y-3">
-          <WhatsappShareButton url={shareUrl} title={shareMessage}>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <FaWhatsapp /> WhatsApp
-            </button>
-          </WhatsappShareButton>
+        <div className="w-[360px] bg-black/40 backdrop-blur-lg text-white rounded-lg p-6 shadow-2xl border border-purple-500/40">
+          <h2 className="text-lg font-bold text-center">Share Your Score</h2>
 
-          <LinkedinShareButton url={shareUrl} summary={shareMessage}>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <FaLinkedin /> LinkedIn
-            </button>
-          </LinkedinShareButton>
+          {/* Share Buttons in Row Layout */}
+          <div className="mt-4 flex justify-center gap-3 flex-wrap">
+            <WhatsappShareButton url={shareUrl} title={shareMessage}>
+              <button className="flex items-center justify-center gap-2 bg-green-500 px-3 py-2 rounded-lg shadow-lg hover:bg-green-400 transition">
+                <FaWhatsapp className="text-lg" />
+              </button>
+            </WhatsappShareButton>
 
-          <TwitterShareButton url={shareUrl} title={shareMessage}>
-            <button className="bg-blue-400 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <FaTwitter /> Twitter
-            </button>
-          </TwitterShareButton>
+            <LinkedinShareButton url={shareUrl} summary={shareMessage}>
+              <button className="flex items-center justify-center gap-2 bg-blue-600 px-3 py-2 rounded-lg shadow-lg hover:bg-blue-500 transition">
+                <FaLinkedin className="text-lg" />
+              </button>
+            </LinkedinShareButton>
 
-          <FacebookShareButton url={shareUrl} quote={shareMessage}>
-            <button className="bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <FaFacebook /> Facebook
-            </button>
-          </FacebookShareButton>
+            <TwitterShareButton url={shareUrl} title={shareMessage}>
+              <button className="flex items-center justify-center gap-2 bg-blue-400 px-3 py-2 rounded-lg shadow-lg hover:bg-blue-300 transition">
+                <FaTwitter className="text-lg" />
+              </button>
+            </TwitterShareButton>
 
-          <RedditShareButton url={shareUrl} title={shareMessage}>
-            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <FaReddit /> Reddit
-            </button>
-          </RedditShareButton>
+            <FacebookShareButton url={shareUrl} quote={shareMessage}>
+              <button className="flex items-center justify-center gap-2 bg-blue-700 px-3 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition">
+                <FaFacebook className="text-lg" />
+              </button>
+            </FacebookShareButton>
 
-          <EmailShareButton url={shareUrl} subject="My Score on Cluster Protocol" body={shareMessage}>
-            <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <FaEnvelope /> Email
-            </button>
-          </EmailShareButton>
+            <RedditShareButton url={shareUrl} title={shareMessage}>
+              <button className="flex items-center justify-center gap-2 bg-orange-500 px-3 py-2 rounded-lg shadow-lg hover:bg-orange-400 transition">
+                <FaReddit className="text-lg" />
+              </button>
+            </RedditShareButton>
+
+            <EmailShareButton url={shareUrl} subject="My Score on Cluster Protocol" body={shareMessage}>
+              <button className="flex items-center justify-center gap-2 bg-gray-700 px-3 py-2 rounded-lg shadow-lg hover:bg-gray-600 transition">
+                <FaEnvelope className="text-lg" />
+              </button>
+            </EmailShareButton>
+          </div>
+
+          {/* Close Button */}
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="mt-4 w-full bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-400 transition"
+          >
+            Close
+          </button>
         </div>
-
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="mt-4 w-full bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-400 transition"
-        >
-          Close
-        </button>
       </Modal>
     </div>
   );

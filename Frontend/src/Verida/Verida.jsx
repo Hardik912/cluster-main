@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { usePrivy } from "@privy-io/react-auth";
 
 function Verida() {
   const location = useLocation();
-  const [user, setUser] = useState(null);
+  const { logout, user } = usePrivy();
+  const [connected, setConnected] = useState(false);
+  const [fomoUser, setFomoUser] = useState(null);
   const [fomoData, setFomoData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,9 +28,21 @@ function Verida() {
       return;
     }
 
+    if (user?.id && did && authToken) {
+      console.log("✅ Authenticated with Privy & Verida:", {
+        privyId: user.id,
+        userDid: did,
+        authToken: authToken.substring(0, 10) + "...",
+      });
+
+      // ✅ Send data to backend for FOMO score
+      sendFOMOscore(user.id, did, authToken);
+    }
+
     if (did && authToken) {
       console.log('Authenticated:', { did, authToken: authToken.substring(0, 10) + '...' });
-      setUser({ did, authToken });
+      setFomoUser({ did, authToken });
+      
       return;
     }
 
@@ -46,7 +61,7 @@ function Verida() {
         }
 
         if (extractedDid && extractedToken) {
-          setUser({ did: extractedDid, authToken: extractedToken, tokenData });
+          setFomoUser({ did: extractedDid, authToken: extractedToken, tokenData });
         } else {
           setError('Incomplete authentication data.');
         }
@@ -55,21 +70,42 @@ function Verida() {
         setError('Failed to process authentication data.');
       }
     }
-  }, [location]);
+  }, [user, location]);
+
+  const sendFOMOscore = async ( userDid, authToken) => {
+    try {
+      setLoading(true);
+      console.log("📤 Sending to backend:", { userDid, authToken });
+
+      const response = await axios.post(
+        `http://localhost:5000/api/score/get-score`,
+        { userDid, authToken }
+      );
+
+      const data = response.data;
+      console.log("✅ Backend Response:", data);
+      setFomoData(data);
+    } catch (error) {
+      console.error("❌ Failed to fetch FOMOscore:", error.response?.data || error);
+      setError("Failed to calculate your Telegram score.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!user) return;
+    if (!fomoUser) return;
 
     const fetchFOMOscore = async () => {
       try {
         setLoading(true);
-        console.log('Fetching FOMO score for:', { did: user.did, authToken: user.authToken.substring(0, 10) + '...' });
+        console.log('Fetching FOMO score for:', { did: fomoUser.did, authToken: fomoUser.authToken.substring(0, 10) + '...' });
 
-        if (user.authToken === 'manual-auth-token-for-testing') {
+        if (fomoUser.authToken === 'manual-auth-token-for-testing') {
           setTimeout(() => {
             setFomoData({
               score: 7.5,
-              did: user.did,
+              did: fomoUser.did,
               data: { groups: 12, messages: 257, keywordMatches: { totalCount: 15, keywords: { 'cluster': 5, 'protocol': 8, 'ai': 2 } } }
             });
             setLoading(false);
@@ -79,7 +115,7 @@ function Verida() {
 
         const response = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/api/score`,
-          { did: user.did, authToken: user.authToken }
+          { did: fomoUser.did, authToken: fomoUser.authToken }
         );
 
         console.log('FOMO score received:', response.data);
@@ -93,12 +129,14 @@ function Verida() {
     };
 
     fetchFOMOscore();
-  }, [user]);
+  }, [fomoUser]);
 
   const connectWithVerida = () => {
     const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
     const callbackUrl = `${backendUrl}/auth/callback`;
-
+    setTimeout(() => {
+      setConnected(true);
+    }, 3000); 
     const authUrl = `https://app.verida.ai/auth?scopes=api%3Ads-query&scopes=api%3Asearch-universal&scopes=ds%3Asocial-email&scopes=api%3Asearch-ds&scopes=api%3Asearch-chat-threads&scopes=ds%3Ar%3Asocial-chat-group&scopes=ds%3Ar%3Asocial-chat-message&redirectUrl=${encodeURIComponent(callbackUrl)}&appDID=did%3Avda%3Amainnet%3A0x87AE6A302aBf187298FC1Fa02A48cFD9EAd2818D`;
 
     console.log('Redirecting to Verida:', authUrl);
@@ -106,16 +144,17 @@ function Verida() {
   };
 
   const handleLogout = () => {
-    setUser(null);
+    setFomoUser(null);
     setFomoData(null);
     setError(null);
     setLoading(false);
+    setConnected(false)
     window.location.href = '/';
   };
 
   const handleManualLogin = () => {
     if (manualDid) {
-      setUser({ did: manualDid, authToken: 'manual-auth-token-for-testing' });
+      setFomoUser({ did: manualDid, authToken: 'manual-auth-token-for-testing' });
     } else {
       setError('Please enter a valid DID');
     }
@@ -146,12 +185,12 @@ function Verida() {
     );
   }
 
-  if (user && fomoData) {
+  if (fomoUser && fomoData) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h1 className="text-2xl font-bold">Your FOMOscore</h1>
-          <p className="mt-2 text-gray-600">Verida DID: <span className="font-mono">{user.did}</span></p>
+          <p className="mt-2 text-gray-600">Verida DID: <span className="font-mono">{fomoUser.did}</span></p>
           <div className="mt-4 flex justify-center">
             <div className="w-24 h-24 flex items-center justify-center bg-blue-500 text-white text-3xl font-bold rounded-full">
               {fomoData.score} / 10
@@ -166,28 +205,21 @@ function Verida() {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-white p-6 rounded-lg shadow-md text-center">
-        <h1 className="text-2xl font-bold">FomoScore</h1>
-        <p className="mt-2 text-gray-600">Score based on your Telegram activity</p>
-        <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg" onClick={connectWithVerida}>
-          Connect with Verida
-        </button>
-        <p className="mt-4 text-sm text-gray-500">Sync your Telegram data in Verida Vault before using this app.</p>
-        <button className="mt-4 text-blue-500 underline" onClick={() => setManualMode(!manualMode)}>
-          Developer Mode
-        </button>
-        {manualMode && (
-          <div className="mt-4">
-            <input type="text" value={manualDid} onChange={(e) => setManualDid(e.target.value)}
-              className="border border-gray-300 px-4 py-2 rounded-md w-full" placeholder="Enter Verida DID" />
-            <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg w-full" onClick={handleManualLogin}>
-              Continue
-            </button>
-          </div>
-        )}
-      </div>
+    <div className="relative z-20 bg-gradient-to-b from-gray-900 to-black bg-opacity-60 backdrop-blur-xl shadow-lg rounded-xl p-4 w-[230px] mt-4 border border-cyan-400 transition-all duration-500 ease-in-out flex flex-col items-center">
+  {connected ? (
+    <div className="text-xl font-bold text-cyan-400">
+      Verida Connected
     </div>
+  ) : (
+    <button
+      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all transform hover:scale-105"
+      onClick={connectWithVerida}
+    >
+      Connect with Verida
+    </button>
+  )}
+</div>
+
   );
 }
 

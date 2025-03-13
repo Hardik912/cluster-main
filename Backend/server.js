@@ -123,7 +123,7 @@ app.get('/auth/callback', async (req, res) => {
     console.log('Final values - DID:', did, 'Auth Token:', authToken ? `${authToken.substring(0, 10)}...` : 'none');
     
     // Redirect to frontend with the token information
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/verida';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/dashboard/:privyId/:username/:address';
     const redirectUrl = `${frontendUrl}?did=${encodeURIComponent(did || 'unknown')}&authToken=${encodeURIComponent(authToken)}`;
     
     console.log('Redirecting to frontend with token data:', redirectUrl);
@@ -132,7 +132,7 @@ app.get('/auth/callback', async (req, res) => {
     console.error('Error in auth callback:', error);
     
     // Redirect to frontend with error information
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/verida';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173/dashboard/:privyId/:username/:address';
     res.redirect(`${frontendUrl}?error=auth_error&message=${encodeURIComponent(error.message || 'Unknown error')}`);
   }
 });
