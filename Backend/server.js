@@ -96,7 +96,7 @@ app.get('/auth/callback', async (req, res) => {
     if (!authToken) {
       // If no token, redirect to Verida's token generator with our frontend as the callback
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5174/home/leaderboard';
-      const returnUrl = `${frontendUrl}?source=verida_callback`;
+      const returnUrl = `${frontendUrl}`;
       
       console.log('No token found, redirecting to Verida token generator with return URL:', returnUrl);
       
